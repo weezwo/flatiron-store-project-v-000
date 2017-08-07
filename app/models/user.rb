@@ -5,9 +5,22 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :carts
-  attr_writer :current_cart
+  belongs_to :current_cart, :class_name => "Cart"
 
-  def current_cart
-    self.carts.where(status: nil).first || self.carts.create
+  def create_current_cart
+    new_cart = carts.create
+    self.current_cart_id = new_cart.id
+    save
   end
+
+  def remove_cart
+    self.current_cart_id = nil
+    save
+  end
+
+  # attr_writer :current_cart
+  #
+  # def current_cart
+  #   self.carts.where(status: nil).first || self.carts.where(status: "submitted").first
+  # end
 end

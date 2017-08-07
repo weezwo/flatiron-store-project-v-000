@@ -4,16 +4,15 @@ class Cart < ActiveRecord::Base
   belongs_to :user
 
   def total
-    items.map{|x| x.price}.inject(:+)
+    line_items.map{|x| x.item.price * x.quantity}.inject(:+)
   end
 
   def add_item(item_id)
-    line_item = line_items.find_by(item_id: item_id)
-    if line_item
-      line_item.quantity += 1
+    if line_item = line_items.find_by("item_id = ?", item_id)
     else
-      line_item = line_items.build(item_id: item_id, quantity: 1)
+      line_item = self.line_items.build(item_id: item_id)
     end
+    line_item.quantity += 1
     line_item
   end
 
@@ -22,6 +21,7 @@ class Cart < ActiveRecord::Base
       update_item_stock(line_item)
     end
     update(status: "submitted")
+    user.remove_cart
   end
 
   def update_item_stock(line_item)

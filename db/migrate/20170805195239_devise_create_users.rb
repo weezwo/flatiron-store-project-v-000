@@ -1,6 +1,9 @@
 class DeviseCreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
+
+      t.integer :current_cart_id
+      
       t.string :name
       ## Database authenticatable
       t.string :email,              null: false, default: ""

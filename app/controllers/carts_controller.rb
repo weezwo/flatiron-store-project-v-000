@@ -5,7 +5,8 @@ class CartsController < ApplicationController
   end
 
   def checkout
+    checkout_cart = current_cart
     current_cart.init_checkout
-    redirect_to cart_path(@current_cart)
+    redirect_to cart_path(checkout_cart)
   end
 end
